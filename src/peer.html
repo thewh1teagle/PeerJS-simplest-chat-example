@@ -10,6 +10,8 @@
     <input type="text" id="input-message" placeholder="message">
     <button id="button-send">Send</button>
 
+
+    <!--  PeerJS client library -->
     <script src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
     <script>
 
@@ -18,12 +20,12 @@
         var button_connect = document.getElementById('button-connect')
         var button_send = document.getElementById('button-send')
         
-    
+        
         var peer = null
         var conn = null
 
 
-        peer = new Peer({
+        peer = new Peer({ // Connect our peerJsServer
             host: 'localhost',
             port: 9000,
             path: '/myapp'
@@ -37,18 +39,22 @@
             console.log(e)
         })
 
+        
+        // When we get new connection (this is the "receiver side")
         peer.on('connection', function(dataConnection) {
-            // Receive messages
+            
             console.log("connected to peer")
             conn = dataConnection
+            // Start Receive messages
             conn.on('data', function(data) {
                 console.log('Received', data);
             });
         });
 
         button_connect.addEventListener("click", function() {
-            console.log(`connecting to ${input_peer_id.value}`)
-            conn = peer.connect(input_peer_id.value)
+            console.log(`Connecting to ${input_peer_id.value}`)
+            conn = peer.connect(input_peer_id.value) // The sender side
+            // Start Receive messages
             conn.on('data', function(data) {
                 console.log('Received', data);
             });
